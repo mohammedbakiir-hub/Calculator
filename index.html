@@ -3,147 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator Estetik</title>
+    <title>Kalkulator Estetik & Riwayat</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            background: linear-gradient(135deg, #1e1e2f, #2d2b42); 
-            margin: 0; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e1e2f, #2d2b42);
+            margin: 0;
         }
-        .calculator { 
-            background: #252336; 
-            padding: 24px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-            width: 300px; 
+        .main-container {
+            display: flex;
+            gap: 20px;
+            background: #252336;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .app-title {
-            color: #fff;
+        .history-panel {
+            width: 180px;
+            background: #181622;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-height: 420px;
+            border: 1px solid #3a3750;
+        }
+        .history-content {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .history-panel h4 {
+            color: #a29bfe;
+            font-size: 12px;
+            margin: 0 0 8px 0;
             text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        #display { 
-            width: 100%; 
-            height: 60px; 
-            background: #181622; 
+        .history-item {
+            color: #8c88a8;
+            font-size: 11px;
+            text-align: right;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #2d2b42;
+            padding-bottom: 4px;
+        }
+        .btn-clear-history {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .btn-clear-history:hover {
+            background: #ff1744;
+        }
+        .calculator {
+            width: 280px;
+        }
+        .display {
+            width: 100%;
+            height: 60px;
+            background: #181622;
+            color: #ffffff;
+            font-size: 22px;
+            text-align: right;
+            padding: 10px 14px;
+            box-sizing: border-box;
+            border: 1px solid #3a3750;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #35334a;
+            color: #ffffff;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #464363;
+        }
+        .btn-operator {
+            background: #ff9f43;
             color: #fff;
-            font-size: 24px; 
-            text-align: right; 
-            padding: 10px; 
-            box-sizing: border-box; 
-            margin-bottom: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #3a3750; 
         }
-        .buttons { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 8px; 
+        .btn-operator:hover {
+            background: #f39c12;
         }
-        button { 
-            padding: 14px; 
-            font-size: 16px; 
-            font-weight: 600;
-            cursor: pointer; 
-            border: none; 
-            border-radius: 8px; 
-            background: #36334c; 
-            color: #e2e2e2; 
-            transition: 0.2s; 
+        .btn-function {
+            background: #0984e3;
+            color: #fff;
         }
-        button:hover { background: #4c486a; }
-        .operator { background: #ff9f43; color: #fff; }
-        .operator:hover { background: #e08b35; }
-        .clear { background: #ff5252; color: #fff; }
-        .clear:hover { background: #e04444; }
-        .function { background: #48dbfb; color: #1e1e2f; }
-        .function:hover { background: #37c3df; }
-        .equal { background: #1dd1a1; color: #fff; grid-column: span 2; }
-        .equal:hover { background: #10ac84; }
+        .btn-function:hover {
+            background: #74b9ff;
+        }
+        .btn-equal {
+            background: #00b894;
+            color: #fff;
+            grid-column: span 2;
+        }
+        .btn-equal:hover {
+            background: #55efc4;
+        }
+        .btn-clear {
+            background: #d63031;
+            color: #fff;
+        }
+        .btn-clear:hover {
+            background: #ff7675;
+        }
     </style>
 </head>
 <body>
 
-<div class="calculator">
-    <div class="app-title">Calculator</div>
-    <input type="text" id="display" readonly>
-    <div class="buttons">
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button class="function" onclick="backspace()">⌫</button>
-        <button class="function" onclick="appendValue('(')">(</button>
-        <button class="function" onclick="appendValue(')')">)</button>
-        
-        <button class="function" onclick="appendSquare()">x²</button>
-        <button class="function" onclick="appendSqrt()">√</button>
-        <button class="operator" onclick="appendValue('÷')">÷</button>
-        <button class="operator" onclick="appendValue('×')">×</button>
-        
-        <button onclick="appendValue('7')">7</button>
-        <button onclick="appendValue('8')">8</button>
-        <button onclick="appendValue('9')">9</button>
-        <button class="operator" onclick="appendValue('-')">-</button>
-        
-        <button onclick="appendValue('4')">4</button>
-        <button onclick="appendValue('5')">5</button>
-        <button onclick="appendValue('6')">6</button>
-        <button class="operator" onclick="appendValue('+')">+</button>
-        
-        <button onclick="appendValue('1')">1</button>
-        <button onclick="appendValue('2')">2</button>
-        <button onclick="appendValue('3')">3</button>
-        <button onclick="appendValue('.')">.</button>
-        
-        <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
-        <button class="equal" onclick="calculate()">=</button>
+<div class="main-container">
+    <!-- Panel Riwayat di Kiri -->
+    <div class="history-panel">
+        <div>
+            <h4>Riwayat</h4>
+            <div class="history-content" id="historyList">
+                <div class="history-item" style="text-align: center; color: #555;">Belum ada riwayat</div>
+            </div>
+        </div>
+        <button class="btn-clear-history" onclick="clearHistory()">Hapus Riwayat</button>
+    </div>
+
+    <!-- Kalkulator Utama -->
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="btn-clear" onclick="clearDisplay()">C</button>
+            <button class="btn-function" onclick="appendValue('(')">(</button>
+            <button class="btn-function" onclick="appendValue(')')">)</button>
+            <button class="btn-operator" onclick="appendValue('/')">÷</button>
+            
+            <button class="btn-function" onclick="appendPower()">xʸ</button>
+            <button class="btn-function" onclick="appendSqrt()">√</button>
+            <button class="btn-operator" onclick="appendValue('+')">+</button>
+            <button class="btn-operator" onclick="appendValue('*')">×</button>
+            
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button class="btn-operator" onclick="appendValue('-')">-</button>
+            
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button onclick="appendValue('.')">.</button>
+            
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button onclick="appendValue('000')">000</button>
+            
+            <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
+            <button class="btn-equal" onclick="calculate()">=</button>
+        </div>
     </div>
 </div>
 
 <script>
     const display = document.getElementById('display');
+    const historyList = document.getElementById('historyList');
+    let currentExpression = '';
+    let historyData = [];
 
     function appendValue(val) {
-        display.value += val;
-    }
-
-    function clearDisplay() {
-        display.value = '';
-    }
-
-    function backspace() {
-        display.value = display.value.slice(0, -1);
-    }
-
-    function appendSquare() {
-        if (display.value !== '') {
-            display.value = `(${display.value})**2`;
-            calculate();
+        if (display.innerText === '0' && val !== '.') {
+            currentExpression = '';
         }
+        currentExpression += val;
+        display.innerText = currentExpression;
+    }
+
+    function appendPower() {
+        currentExpression += '^';
+        display.innerText = currentExpression;
     }
 
     function appendSqrt() {
-        display.value += 'Math.sqrt(';
+        currentExpression += '√(';
+        display.innerText = currentExpression;
+    }
+
+    function clearDisplay() {
+        currentExpression = '';
+        display.innerText = '0';
+    }
+
+    function clearHistory() {
+        historyData = [];
+        historyList.innerHTML = '<div class="history-item" style="text-align: center; color: #555;">Belum ada riwayat</div>';
     }
 
     function calculate() {
         try {
-            // Ubah simbol visual ke operator JavaScript asli sebelum dihitung
-            let expression = display.value
+            let evalExpression = currentExpression
                 .replace(/×/g, '*')
-                .replace(/÷/g, '/');
+                .replace(/÷/g, '/')
+                .replace(/²/g, '**2')
+                .replace(/\^/g, '**');
+
+            while (evalExpression.includes('√(')) {
+                evalExpression = evalExpression.replace(/√\(([^)]+)\)/g, 'Math.sqrt($1)');
+            }
+
+            let result = eval(evalExpression);
             
-            let result = eval(expression);
-            display.value = Number.isFinite(result) ? result : 'Error';
+            if (!Number.isInteger(result)) {
+                result = parseFloat(result.toFixed(6));
+            }
+
+            historyData.unshift(`${currentExpression} = ${result}`);
+            if (historyData.length > 10) historyData.pop();
+
+            updateHistoryUI();
+
+            display.innerText = result;
+            currentExpression = result.toString();
         } catch (error) {
-            display.value = 'Error';
+            display.innerText = 'Error';
+            currentExpression = '';
         }
+    }
+
+    function updateHistoryUI() {
+        if (historyData.length === 0) {
+            historyList.innerHTML = '<div class="history-item" style="text-align: center; color: #555;">Belum ada riwayat</div>';
+            return;
+        }
+        historyList.innerHTML = '';
+        historyData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerText = item;
+            historyList.appendChild(div);
+        });
     }
 </script>
 

@@ -21,7 +21,7 @@
     --border:rgba(255,255,255,.07);
 }
 
-* {box-sizing:border-box}
+* { box-sizing:border-box; }
 
 body {
     margin:0;
@@ -209,7 +209,6 @@ body {
     font-weight:600;
     overflow-x:auto;
     white-space:nowrap;
-    scrollbar-width:thin;
 }
 
 .status {
@@ -241,6 +240,7 @@ button.key {
     cursor:pointer;
     transition:.15s;
     touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
 }
 
 button.key:hover {
@@ -277,10 +277,6 @@ button.equal:hover {
     background:#7aebc7;
 }
 
-button.zero {
-    grid-column:span 2;
-}
-
 button.wide {
     grid-column:span 2;
 }
@@ -301,17 +297,14 @@ button.wide {
     color:var(--accent);
 }
 
+.basic-buttons .basic-clear {
+    background:#30364b;
+    color:#ff777d;
+}
+
 .basic-buttons .equal {
     background:var(--green);
     color:#10251f;
-}
-
-.basic-buttons .zero {
-    grid-column:span 2;
-}
-
-.basic-buttons .basic-clear {
-    color:#ff777d;
 }
 
 [hidden] {
@@ -395,15 +388,13 @@ button.wide {
     </aside>
 
 
-    <!-- CALCULATOR -->
+    <!-- MAIN CALCULATOR -->
 
     <main class="panel calculator">
 
         <div class="topbar">
 
             <h2 id="calculatorTitle">BASIC CALCULATOR</h2>
-
-            <!-- THREE MODES -->
 
             <div class="mode">
                 <button id="basicBtn" class="active">BASIC</button>
@@ -417,15 +408,9 @@ button.wide {
         <!-- DISPLAY -->
 
         <div class="display">
-
             <div class="expression" id="expression"></div>
-
             <div class="result" id="result">0</div>
-
-            <div class="status" id="status">
-                Ready · Basic mode
-            </div>
-
+            <div class="status" id="status">Ready · Basic mode</div>
         </div>
 
 
@@ -433,32 +418,43 @@ button.wide {
 
         <div class="buttons basic-buttons" id="basicButtons">
 
-            <button class="key basic-action" data-value="(">(</button>
-            <button class="key basic-action" data-value=")">)</button>
+            <!-- CONTROL ROW -->
+
+            <button class="key basic-clear" data-action="clear"
+                    title="Hapus semua">AC</button>
+
+            <button class="key basic-action" data-action="backspace"
+                    title="Hapus karakter terakhir">⌫</button>
+
             <button class="key basic-action" data-value="%">%</button>
-            <button class="key basic-clear" data-action="clear">AC</button>
+
+            <button class="key operator" data-value="÷">÷</button>
+
+
+            <!-- NUMBER ROWS -->
 
             <button class="key" data-value="7">7</button>
             <button class="key" data-value="8">8</button>
             <button class="key" data-value="9">9</button>
-            <button class="key operator" data-value="÷">÷</button>
+            <button class="key operator" data-value="×">×</button>
 
             <button class="key" data-value="4">4</button>
             <button class="key" data-value="5">5</button>
             <button class="key" data-value="6">6</button>
-            <button class="key operator" data-value="×">×</button>
+            <button class="key operator" data-value="-">−</button>
 
             <button class="key" data-value="1">1</button>
             <button class="key" data-value="2">2</button>
             <button class="key" data-value="3">3</button>
-            <button class="key operator" data-value="-">−</button>
-
-            <button class="key zero" data-value="0">0</button>
-            <button class="key" data-value=".">.</button>
             <button class="key operator" data-value="+">+</button>
 
-            <button class="key basic-action" data-action="backspace">DEL</button>
-            <button class="key equal wide" data-action="calculate">=</button>
+
+            <!-- ZERO AND 000 -->
+
+            <button class="key" data-value="0">0</button>
+            <button class="key" data-value="000">000</button>
+            <button class="key" data-value=".">.</button>
+            <button class="key equal" data-action="calculate">=</button>
 
         </div>
 
@@ -539,6 +535,7 @@ button.wide {
         </div>
 
     </main>
+
 </div>
 
 
@@ -731,7 +728,6 @@ function tokenize(input) {
 
 // ========================================
 // 5. MATHEMATICAL PARSER
-// Tanpa eval()
 // ========================================
 
 class Parser {
@@ -983,16 +979,13 @@ function setMode(mode) {
     $("radBtn").classList.toggle("active", mode === "RAD");
 
     $("calculatorTitle").textContent =
-        isBasic ? "BASIC CALCULATOR" : "SCIENTIFIC CALCULATOR";
+        isBasic
+        ? "BASIC CALCULATOR"
+        : "SCIENTIFIC CALCULATOR";
 
     if (mode === "DEG" || mode === "RAD") {
         angleMode = mode;
     }
-
-    statusDisplay.textContent =
-        mode === "BASIC"
-        ? "Ready · Basic mode"
-        : "Ready · " + mode + " mode";
 
     clearAll();
 }
@@ -1325,7 +1318,6 @@ document.addEventListener("keydown", event => {
     } else if (key === "/") {
 
         event.preventDefault();
-
         append("÷");
 
     } else if (key === "^" && currentMode !== "BASIC") {
@@ -1342,7 +1334,6 @@ document.addEventListener("keydown", event => {
     } else if (key === "Enter" || key === "=") {
 
         event.preventDefault();
-
         calculate();
 
     } else if (key === "Backspace") {
